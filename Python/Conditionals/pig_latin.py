@@ -1,22 +1,16 @@
 def translate(text):
     vowel_sounds = "aeiou"
-    texts = ""
+    
+    special_vowels = ["xr", "yt", "yg"]
+    modified = []
+    
     for text in text.split():
-        if text[0] in vowel_sounds:
-            text += "ay"
-        else: # if text[0] not in vowel_sounds:        
-            if text[0] in "xy" and text[1] not in vowel_sounds:
-                text += "ay"
-            elif "qu" in text:
-                text = text[text.index("u")+1:] + text[:text.index("u")+1] + "ay"
-            elif text[1] not in vowel_sounds:
-                if len(text) == 2 and text[1] == "y":
-                    text = text[::-1] + "ay"
-                elif text[2] == "y" or text[2] in vowel_sounds:
-                    text = text[2:] + text[:2] +  "ay"
-                else:
-                    text = text[3:] + text[:3] + "ay"
-            else:
-                text = text[1:] + text[0] + "ay"
-        texts += text + " "
-    return texts.strip()
+        if text[0] in vowel_sounds or text[0:2] in special_vowels:
+            modified.append(text + "ay")
+            continue
+        for pos in range(1, len(text)):
+            if text[pos] in vowel_sounds + "y":
+                pos+=1 if text[pos-1] == 'q' and text[pos] == 'u' else 0 
+                modified.append(text[pos:] + text[:pos] + "ay")
+                break
+    return " ".join(modified)
